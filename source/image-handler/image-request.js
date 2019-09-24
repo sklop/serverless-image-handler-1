@@ -141,8 +141,10 @@ class ImageRequest {
             return decoded.key;
         } else if (requestType === "Thumbor" || requestType === "Custom") {
             // Parse the key from the end of the path
-            const key = (event["path"]).split("/");
-            return key[key.length - 1];
+            // Assume the path structure looks like '/filter(...)/<original path>'
+            const key = (event["path"]).split(")");
+            // Last element of the key array is '/<original path>': skip the first character
+            return key[key.length - 1].slice(1);
         } else {
             // Return an error for all other conditions
             throw ({
