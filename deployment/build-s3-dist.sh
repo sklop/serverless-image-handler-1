@@ -13,13 +13,13 @@ echo "--------------------------------------------------------------------------
 cp *.template dist/ 
  
 replace="s/%%BUCKET_NAME%%/$1/g" 
-sed -i '' -e $replace dist/*.template 
+sed  -i  -e $replace   dist/*.template 
  
 replace="s/%%TEMPLATE_BUCKET%%/$2/g" 
-sed -i '' -e $replace dist/*.template 
+sed -i  -e $replace dist/*.template 
  
 replace="s/%%VERSION%%/$3/g" 
-sed -i '' -e $replace dist/*.template 
+sed -i  -e $replace dist/*.template 
  
 cd ../source 
 

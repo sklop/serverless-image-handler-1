@@ -20,21 +20,30 @@ class ImageHandler {
      * Main method for processing image requests and outputting modified images.  
      * @param {ImageRequest} request - An ImageRequest object.  
      */  
-    async process(request) {  
-        const originalImage = request.originalImage; 
-        const edits = request.edits; 
-        if (edits !== undefined) { 
-            const modifiedImage = await this.applyEdits(originalImage, edits); 
-            if (request.outputFormat !== undefined) {  
-                await modifiedImage.toFormat(request.outputFormat);  
-            }  
-            const bufferImage = await modifiedImage.toBuffer();  
-            return bufferImage.toString('base64'); 
-        } else { 
-            return originalImage.toString('base64'); 
-        } 
-    }  
-  
+    async process(request) {
+        const originalImage = request.originalImage;
+        const edits = request.edits;
+        if (edits !== undefined) {
+            const modifiedImage = await this.applyEdits(originalImage, edits);
+            if (request.outputFormat !== undefined) {
+                await modifiedImage.toFormat(request.outputFormat);
+            }
+            const bufferImage = await modifiedImage.toBuffer();
+            return bufferImage.toString('base64');
+        } else {
+            if (request.outputFormat !== undefined) {
+                const sImage = sharp(originalImage)
+                const md = await sImage.metadata();
+                if (md.format !== request.outputFormat) {
+                    await sImage.toFormat(request.outputFormat);
+                    const bufferImage = await sImage.toBuffer();
+                    return bufferImage.toString('base64');
+                }
+            }
+            return originalImage.toString('base64');
+        }
+    }
+
     /**  
      * Applies image modifications to the original image based on edits  
      * specified in the ImageRequest.  

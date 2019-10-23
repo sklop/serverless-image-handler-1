@@ -683,7 +683,7 @@ describe('getOutputFormat()', function () {
             const imageRequest = new ImageRequest();
             var result = imageRequest.getOutputFormat(event);
             // Assert
-            assert.deepEqual(result, null);
+            assert.deepEqual(result, 'jpeg');
         });
     });
     describe('003/AutoWebPDisabled', function () {

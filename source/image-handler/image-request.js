@@ -245,8 +245,13 @@ class ImageRequest {
     */
     getOutputFormat(event) {
         const autoWebP = process.env.AUTO_WEBP;
-        if (autoWebP && event.headers.Accept && event.headers.Accept.includes("image/webp")) {
-            return "webp";
+        if (autoWebP) {
+            if (((event.headers.Accept && event.headers.Accept.includes("image/webp"))) ||
+                (event.headers.accept && event.headers.accept.includes("image/webp"))) {
+                return "webp";
+            } else {
+                return "jpeg";
+            }
         }
         return null;
     }
