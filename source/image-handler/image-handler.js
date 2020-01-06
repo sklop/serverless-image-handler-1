@@ -31,6 +31,15 @@ class ImageHandler {
             const bufferImage = await modifiedImage.toBuffer();
             return bufferImage.toString('base64');
         } else {
+            if (request.outputFormat !== undefined) {
+                const sImage = sharp(originalImage)
+                const md = await sImage.metadata();
+                if (md.format !== request.outputFormat) {
+                    await sImage.toFormat(request.outputFormat);
+                    const bufferImage = await sImage.toBuffer();
+                    return bufferImage.toString('base64');
+                }
+            }
             return originalImage.toString('base64');
         }
     }

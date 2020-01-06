@@ -26,7 +26,11 @@ class ImageRequest {
             this.bucket = this.parseImageBucket(event, this.requestType);
             this.key = this.parseImageKey(event, this.requestType);
             this.edits = this.parseImageEdits(event, this.requestType);
-            this.originalImage = await this.getOriginalImage(this.bucket, this.key)
+            this.originalImage = await this.getOriginalImage(this.bucket, this.key);
+            const outputFormat = this.getOutputFormat(event);
+            if(outputFormat) {
+                this.outputFormat = outputFormat;
+            }
             return Promise.resolve(this);
         } catch (err) {
             return Promise.reject(err);
@@ -137,8 +141,10 @@ class ImageRequest {
             return decoded.key;
         } else if (requestType === "Thumbor" || requestType === "Custom") {
             // Parse the key from the end of the path
-            const key = (event["path"]).split("/");
-            return key[key.length - 1];
+            // Assume the path structure looks like '/filter(...)/<original path>'
+            const key = (event["path"]).split(")");
+            // Last element of the key array is '/<original path>': skip the first character
+            return key[key.length - 1].slice(1);
         } else {
             // Return an error for all other conditions
             throw ({
@@ -231,6 +237,23 @@ class ImageRequest {
             const buckets = formatted.split(',');
             return buckets;
         }
+    }
+
+    /**
+    * Return the output format depending on the accepts headers
+    * @param {Object} event - The request body.
+    */
+    getOutputFormat(event) {
+        const autoWebP = process.env.AUTO_WEBP;
+        if (autoWebP) {
+            if (((event.headers.Accept && event.headers.Accept.includes("image/webp"))) ||
+                (event.headers.accept && event.headers.accept.includes("image/webp"))) {
+                return "webp";
+            } else {
+                return "jpeg";
+            }
+        }
+        return null;
     }
 }
 

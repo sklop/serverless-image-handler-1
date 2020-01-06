@@ -7,6 +7,14 @@ Published version, additional details and documentation are available here: http
 
 _Note:_ it is recommend to build the application binary on Amazon Linux.
 
+# Note about `festicket-stable` branch
+
+This branch is the modified version to fix the main issues which are in the upstream version:
+
+- [Missing auto WebP support](https://github.com/awslabs/serverless-image-handler/issues/99). A pull request has been submitted upstream.
+- [Missing `Cache-Control` header on the response](https://github.com/awslabs/serverless-image-handler/pull/151)
+- [Images in subfolders](https://github.com/awslabs/serverless-image-handler/issues/112). This has been fixed by changing how the URL is split, and is very specific to our own usage. The change lives on its own the `images-in-subfolder` branch. 
+
 ## Building distributable for customization
 * Clone the repository, then make the desired code changes
 ```bash
